@@ -1,7 +1,7 @@
 "use client";
 
 import { SessionContext } from "@/context/session";
-import { login, logout, register, setGuestSession } from "@/lib/auth";
+import { login, logout, register } from "@/lib/auth";
 import Link from "next/link";
 import type { FormEvent } from "react";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -30,7 +30,7 @@ export default function AuthModal() {
     e.preventDefault();
 
     const target = e.target as HTMLFormElement;
-     if (activeTab === "login") {
+    if (activeTab === "login") {
       const loginName = target.elements.namedItem("loginName") as HTMLInputElement;
       const loginPassword = target.elements.namedItem("loginPassword") as HTMLInputElement;
       if (!loginName || !loginName.value || !loginPassword || !loginPassword.value) return;
@@ -85,9 +85,8 @@ export default function AuthModal() {
   return (
     <>
       <input type="checkbox" id="auth-modal" className="modal-toggle" ref={modalToggleRef} />
-
       <label
-        htmlFor="auth-modal backdrop-blur-lg"
+        htmlFor="auth-modal"
         className={"modal" + (session?.user === null ? " modal-open" : "")}
       >
         <label className="modal-box flex max-w-sm flex-col gap-4 pt-2">
@@ -152,7 +151,6 @@ export default function AuthModal() {
               </div>
 
               <form className="flex flex-col px-2" onSubmit={submitAuth}>
-
                 {activeTab === "login" && <Login />}
                 {activeTab === "register" && <Register />}
 

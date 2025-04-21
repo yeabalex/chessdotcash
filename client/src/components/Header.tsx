@@ -1,4 +1,4 @@
-import { IconExternalLink, IconUser } from "@tabler/icons-react";
+import { IconUser } from "@tabler/icons-react";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 
