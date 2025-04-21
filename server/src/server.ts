@@ -11,7 +11,7 @@ import routes from "./routes/index.js";
 import { init as initSocket } from "./socket/index.js";
 
 const corsConfig = {
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://chat.koolsalesai.com"],
     credentials: true
 };
 
