@@ -7,13 +7,12 @@ import type { FormEvent } from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { IconSettings2, IconUserCircle } from "@tabler/icons-react";
-import Guest from "./Guest";
 import Login from "./Login";
 import Register from "./Register";
 
 export default function AuthModal() {
   const session = useContext(SessionContext);
-  const [activeTab, setActiveTab] = useState<"guest" | "login" | "register">("guest");
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const [serverMessage, setServerMessage] = useState<string | null>(null);
   const [buttonLoading, setButtonLoading] = useState(false);
   const modalToggleRef = useRef<HTMLInputElement>(null);
@@ -31,20 +30,7 @@ export default function AuthModal() {
     e.preventDefault();
 
     const target = e.target as HTMLFormElement;
-    if (activeTab === "guest") {
-      const guestName = target.elements.namedItem("guestName") as HTMLInputElement;
-      if (!guestName || !guestName.value) return;
-
-      setButtonLoading(true);
-      const user = await setGuestSession(guestName.value);
-      if (user) {
-        session?.setUser(user);
-        if (modalToggleRef.current?.checked) {
-          modalToggleRef.current.checked = false;
-        }
-      }
-      guestName.value = "";
-    } else if (activeTab === "login") {
+     if (activeTab === "login") {
       const loginName = target.elements.namedItem("loginName") as HTMLInputElement;
       const loginPassword = target.elements.namedItem("loginPassword") as HTMLInputElement;
       if (!loginName || !loginName.value || !loginPassword || !loginPassword.value) return;
@@ -101,7 +87,7 @@ export default function AuthModal() {
       <input type="checkbox" id="auth-modal" className="modal-toggle" ref={modalToggleRef} />
 
       <label
-        htmlFor="auth-modal"
+        htmlFor="auth-modal backdrop-blur-lg"
         className={"modal" + (session?.user === null ? " modal-open" : "")}
       >
         <label className="modal-box flex max-w-sm flex-col gap-4 pt-2">
@@ -142,19 +128,6 @@ export default function AuthModal() {
             <>
               <div className="tabs flex-nowap w-full">
                 <span
-                  onClick={() => {
-                    setActiveTab("guest");
-                  }}
-                  className={
-                    "tab tab-bordered tab-border-2 flex-grow rounded-tl-lg" +
-                    (activeTab === "guest"
-                      ? " tab-active text-base-content"
-                      : " text-base-content border-opacity-10 hover:border-opacity-30")
-                  }
-                >
-                  Guest
-                </span>
-                <span
                   onClick={() => setActiveTab("login")}
                   className={
                     "tab tab-bordered tab-border-2 flex-grow rounded-tl-lg" +
@@ -179,9 +152,7 @@ export default function AuthModal() {
               </div>
 
               <form className="flex flex-col px-2" onSubmit={submitAuth}>
-                {activeTab === "guest" && (
-                  <Guest currentName={session?.user?.name || "unknown user"} />
-                )}
+
                 {activeTab === "login" && <Login />}
                 {activeTab === "register" && <Register />}
 
@@ -193,7 +164,6 @@ export default function AuthModal() {
                     </label>
                   )}
                   <button className={"btn" + (buttonLoading ? " loading" : "")} type="submit">
-                    {activeTab === "guest" && "Confirm"}
                     {activeTab === "login" && "Login"}
                     {activeTab === "register" && "Register"}
                   </button>

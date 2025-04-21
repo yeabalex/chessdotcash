@@ -8,7 +8,7 @@ export const getGames = async (req: Request, res: Response) => {
     try {
         if (!req.query.id && !req.query.userid) {
             // get all active games
-            res.status(200).json(activeGames.filter((g) => !g.unlisted && !g.winner));
+            res.status(200).json(activeGames.filter((g) => !g.unlisted && !g.winner && !(g.black && g.white)));
             return;
         }
 
@@ -53,7 +53,11 @@ export const getActiveGame = async (req: Request, res: Response) => {
         }
 
         const game = activeGames.find((g) => g.code === req.params.code);
-
+        /*const index = activeGames.findIndex((g) => g.code === req.params.code);
+        if (index !== -1) {
+            activeGames.splice(index, 1);
+        }
+*/
         if (!game) {
             res.status(404).end();
         } else {
@@ -82,7 +86,8 @@ export const createGame = async (req: Request, res: Response) => {
             code: nanoid(6),
             unlisted,
             host: user,
-            pgn: ""
+            pgn: "",
+            bidAmount: req.body.bidAmount,
         };
         if (req.body.side === "white") {
             game.white = user;
@@ -99,6 +104,38 @@ export const createGame = async (req: Request, res: Response) => {
         activeGames.push(game);
 
         res.status(201).json({ code: game.code });
+    } catch (err: unknown) {
+        console.log(err);
+        res.status(500).end();
+    }
+};
+
+
+export const leaveGame = async (req: Request, res: Response) => {
+    try {
+        if (!req.session.user?.id) {
+            console.log("unauthorized leaveGame");
+            res.status(401).end();
+            return;
+        }
+
+        if (!req.params || !req.params.code) {
+            res.status(400).end();
+            return;
+        }
+
+        const gameIndex = activeGames.findIndex((g) => g.code === req.params.code);
+        if (gameIndex === -1) {
+            res.status(404).end();
+            return;
+        }
+
+        // Optional: add your TODO logic here to handle transfer of money
+
+        // Remove the game from the array
+        activeGames.splice(gameIndex, 1);
+
+        res.status(200).json({ message: 'Game successfully removed.' });
     } catch (err: unknown) {
         console.log(err);
         res.status(500).end();

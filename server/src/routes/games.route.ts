@@ -6,6 +6,6 @@ const router = Router();
 
 router.route("/").get(controller.getGames).post(controller.createGame);
 
-router.route("/:code").get(controller.getActiveGame);
+router.route("/:code").get(controller.getActiveGame).delete(controller.leaveGame);
 
 export default router;

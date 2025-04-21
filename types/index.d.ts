@@ -3,6 +3,7 @@ export interface Game {
     pgn?: string;
     white?: User;
     black?: User;
+    bidAmount: number;
     winner?: "white" | "black" | "draw";
     endReason?: "draw" | "checkmate" | "stalemate" | "repetition" | "insufficient" | "abandoned";
     host?: User;

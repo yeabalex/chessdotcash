@@ -1,6 +1,12 @@
 import pg from "pg";
-
-export const db = new pg.Pool();
+import dotenv from "dotenv";
+dotenv.config();
+export const db = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: true // Use `true` if you have a valid CA
+    }
+});
 
 export const INIT_TABLES = /* sql */ `
     CREATE TABLE IF NOT EXISTS "user" (

@@ -1,7 +1,7 @@
 import { API_URL } from "@/config";
 import type { Game } from "@chessu/types";
 
-export const createGame = async (side: string, unlisted: boolean) => {
+export const createGame = async (side: string, unlisted: boolean, bidAmount: number) => {
     try {
         const res = await fetch(`${API_URL}/v1/games`, {
             method: "POST",
@@ -9,7 +9,7 @@ export const createGame = async (side: string, unlisted: boolean) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ side, unlisted }),
+            body: JSON.stringify({ side, unlisted, bidAmount }),
             cache: "no-store"
         });
 
@@ -74,3 +74,23 @@ export const fetchArchivedGame = async ({ id, userid }: { id?: number; userid?: 
         console.error(err);
     }
 };
+
+
+export const leaveGame = async (code:string)=>{
+    try {
+        const res = await fetch(`${API_URL}/v1/games/${code}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            cache: "no-store"
+        });
+
+        if (res && res.status === 204) {
+            return true;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
